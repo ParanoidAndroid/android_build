@@ -82,15 +82,30 @@ ifneq ($(USE_CCACHE),)
   # on a workstation.
   export CCACHE_BASEDIR := /
 
+  # Turn cache statistics off to improve performance.
+  # We do not use it's results anyway.
+  CCACHE_NOSTATS := 1
+
   CCACHE_HOST_TAG := $(HOST_PREBUILT_TAG)
   # If we are cross-compiling Windows binaries on Linux
   # then use the linux ccache binary instead.
   ifeq ($(HOST_OS)-$(BUILD_OS),windows-linux)
     CCACHE_HOST_TAG := linux-$(BUILD_ARCH)
   endif
-  ccache := prebuilts/misc/$(CCACHE_HOST_TAG)/ccache/ccache
-  # Check that the executable is here.
-  ccache := $(strip $(wildcard $(ccache)))
+
+  # Search executable
+  ccache =
+  ifneq ($(strip $(wildcard /usr/bin/ccache)),)
+    ccache := /usr/bin/ccache
+    # Enable compression with host executable
+    export CCACHE_COMPRESS := 1
+  else ifneq ($(strip $(wildcard $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_EXTRA_TAG)/ccache/ccache)),)
+    ccache := $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_EXTRA_TAG)/ccache/ccache
+  else ifneq ($(strip $(wildcard $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_TAG)/ccache/ccache)),)
+    ccache := $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_TAG)/ccache/ccache
+  endif
+
+  # Configure ccache
   ifdef ccache
     # prepend ccache if necessary
     ifneq ($(ccache),$(firstword $($(combo_target)CC)))
