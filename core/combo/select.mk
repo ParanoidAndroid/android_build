@@ -82,10 +82,6 @@ ifneq ($(USE_CCACHE),)
   # on a workstation.
   export CCACHE_BASEDIR := /
 
-  # Turn cache statistics off to improve performance.
-  # We do not use it's results anyway.
-  CCACHE_NOSTATS := 1
-
   CCACHE_HOST_TAG := $(HOST_PREBUILT_TAG)
   # If we are cross-compiling Windows binaries on Linux
   # then use the linux ccache binary instead.
