@@ -78,12 +78,13 @@ else
 endif
 
 ifeq ($(TARGET_USE_GRAPHITE),true)
-    TARGET_arm_CFLAGS :=    -floop-interchange \
+    TARGET_arm_CFLAGS +=    -floop-interchange \
                            -floop-strip-mine \
                            -floop-block \
                            -ffast-math \
                            -funsafe-loop-optimizations
 endif
+
 # Modules can choose to compile some source as thumb. As
 # non-thumb enabled targets are supported, this is treated
 # as a 'hint'. If thumb is not enabled, these files are just
@@ -105,7 +106,7 @@ else
 endif
 
 ifeq ($(TARGET_USE_GRAPHITE),true)
-    TARGET_thumb_CFLAGS:=    -floop-interchange \
+    TARGET_thumb_CFLAGS +=   -floop-interchange \
                              -floop-strip-mine \
                              -floop-block \
                              -ffast-math \

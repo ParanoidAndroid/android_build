@@ -116,12 +116,12 @@ ifeq ($(TARGET_ARCH),arm)
     ifneq ($(USE_CCACHE),)
      # search executable
       ccache =
-      ifneq ($(strip $(wildcard $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_EXTRA_TAG)/ccache/ccache)),)
+      ifneq ($(strip $(wildcard /usr/bin/ccache)),)
+        ccache := /usr/bin/ccache
+      else ifneq ($(strip $(wildcard $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_EXTRA_TAG)/ccache/ccache)),)
         ccache := $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_EXTRA_TAG)/ccache/ccache
-      else
-        ifneq ($(strip $(wildcard $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_TAG)/ccache/ccache)),)
+      else ifneq ($(strip $(wildcard $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_TAG)/ccache/ccache)),)
           ccache := $(ANDROID_BUILD_TOP)/prebuilts/misc/$(HOST_PREBUILT_TAG)/ccache/ccache
-        endif
       endif
     endif
     ifneq ($(TARGET_KERNEL_CUSTOM_TOOLCHAIN),)
@@ -133,7 +133,7 @@ ifeq ($(TARGET_ARCH),arm)
     else
         ARM_CROSS_COMPILE:=CROSS_COMPILE="$(ccache) $(ARM_EABI_TOOLCHAIN)/arm-eabi-"
     endif
-    ccache = 
+    ccache =
 endif
 
 ifeq ($(TARGET_KERNEL_MODULES),)
