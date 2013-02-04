@@ -67,13 +67,19 @@ endif
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 ifeq ($(TARGET_USE_O3),true)
 TARGET_arm_CFLAGS :=    -O3 \
+                        -Wno-error=narrowing \
+                        -Wno-error=sign-compare \
+                        -Wno-error=uninitialized \
                         -fomit-frame-pointer \
-                        -fstrict-aliasing    \
+                        -fstrict-aliasing \
                         -fno-tree-vectorize
 else
 TARGET_arm_CFLAGS :=    -Os \
+                        -Wno-error=narrowing \
+                        -Wno-error=sign-compare \
+                        -Wno-error=uninitialized \
                         -fomit-frame-pointer \
-                        -fstrict-aliasing    \
+                        -fstrict-aliasing \
                         -funswitch-loops
 endif
 # Modules can choose to compile some source as thumb. As
@@ -84,12 +90,18 @@ ifeq ($(ARCH_ARM_HAVE_THUMB_SUPPORT),true)
     ifeq ($(TARGET_USE_O3),true)
     TARGET_thumb_CFLAGS :=  -mthumb \
                             -O3 \
+                            -Wno-error=narrowing \
+                            -Wno-error=sign-compare \
+                            -Wno-error=uninitialized \
                             -fomit-frame-pointer \
                             -fno-strict-aliasing \
                             -fno-tree-vectorize
     else
     TARGET_thumb_CFLAGS :=  -mthumb \
                             -O2 \
+                            -Wno-error=narrowing \
+                            -Wno-error=sign-compare \
+                            -Wno-error=uninitialized \
                             -fomit-frame-pointer \
                             -fno-strict-aliasing
     endif
