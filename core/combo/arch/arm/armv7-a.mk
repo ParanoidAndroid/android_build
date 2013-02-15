@@ -11,9 +11,33 @@ ARCH_ARM_HAVE_ARMV7A            := true
 ARCH_ARM_HAVE_TLS_REGISTER      := true
 ARCH_ARM_HAVE_VFP               := true
 
-# Note: Hard coding the 'tune' value here is probably not ideal,
-# and a better solution should be found in the future.
-#
+mcpu-arg = $(shell sed 's/^-mcpu=//' <<< "$(call cc-option,-mcpu=$(1),-mcpu=$(2))")
+
+ifeq ($(TARGET_ARCH_VARIANT_CPU), cortex-a15)
+TARGET_ARCH_VARIANT_CPU := $(call mcpu-arg,cortex-a15,cortex-a9)
+ARCH_ARM_HAVE_NEON_UNALIGNED_ACCESS    := true
+ARCH_ARM_NEON_MEMSET_DIVIDER           := 132
+#ARCH_ARM_NEON_MEMCPY_ALIGNMENT_DIVIDER := 224
+endif
+ifeq ($(TARGET_ARCH_VARIANT_CPU), cortex-a9)
+TARGET_ARCH_VARIANT_CPU := $(call mcpu-arg,cortex-a9,cortex-a8)
+ARCH_ARM_HAVE_NEON_UNALIGNED_ACCESS    := true
+ARCH_ARM_NEON_MEMSET_DIVIDER           := 132
+ARCH_ARM_NEON_MEMCPY_ALIGNMENT_DIVIDER := 224
+endif
+ifeq ($(TARGET_ARCH_VARIANT_CPU), cortex-a8)
+TARGET_ARCH_VARIANT_CPU := $(call mcpu-arg,cortex-a8,)
+ARCH_ARM_HAVE_NEON_UNALIGNED_ACCESS    := true
+ARCH_ARM_NEON_MEMSET_DIVIDER           := 132
+ARCH_ARM_NEON_MEMCPY_ALIGNMENT_DIVIDER := 224
+endif
+
+ifneq ($(strip $(TARGET_ARCH_VARIANT_CPU)),)
+arch_variant_cflags := \
+    -mcpu=$(strip $(TARGET_ARCH_VARIANT_CPU))
+else
+# fall back on generic tunning if cpu is not specified
+
 arch_variant_cflags := \
     -march=armv7-a \
     -mfloat-abi=softfp \
