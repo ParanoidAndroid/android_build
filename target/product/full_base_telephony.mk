@@ -24,7 +24,7 @@
 
 PRODUCT_PROPERTY_OVERRIDES := \
     keyguard.no_require_sim=true \
-    ro.com.android.dataroaming=true
+    ro.com.android.dataroaming=false
 
 PRODUCT_COPY_FILES := \
     vendor/pa/prebuilt/common/etc/apns-conf.xml:system/etc/apns-conf.xml
