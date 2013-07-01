@@ -71,7 +71,7 @@ TARGET_arm_CFLAGS :=    -O3 \
                         -fstrict-aliasing    \
                         -fno-tree-vectorize
 else
-TARGET_arm_CFLAGS :=    -Os \
+TARGET_arm_CFLAGS :=    -O2 \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
@@ -83,13 +83,13 @@ endif
 ifeq ($(ARCH_ARM_HAVE_THUMB_SUPPORT),true)
     ifeq ($(TARGET_USE_O3),true)
     TARGET_thumb_CFLAGS :=  -mthumb \
-                            -O3 \
+                            -O2 \
                             -fomit-frame-pointer \
                             -fno-strict-aliasing \
                             -fno-tree-vectorize
     else
     TARGET_thumb_CFLAGS :=  -mthumb \
-                            -O2 \
+                            -Os \
                             -fomit-frame-pointer \
                             -fno-strict-aliasing
     endif
