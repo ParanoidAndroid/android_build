@@ -22,9 +22,9 @@
 
 LOCAL_IS_HOST_MODULE := $(call true-or-empty,$(LOCAL_IS_HOST_MODULE))
 ifeq ($(LOCAL_IS_HOST_MODULE),true)
-my_prefix:=HOST_
+my_prefix := HOST_
 else
-my_prefix:=TARGET_
+my_prefix := TARGET_
 endif
 
 LOCAL_MODULE_CLASS := $(strip $(LOCAL_MODULE_CLASS))
@@ -152,6 +152,11 @@ $(full_target): PRIVATE_ADDITIONAL_HTML_DIR := -htmldir2 $(LOCAL_PATH)/$(LOCAL_A
 else
 $(full_target): PRIVATE_ADDITIONAL_HTML_DIR :=
 endif
+ifneq ($(strip $(LOCAL_ADDITIONAL_HTML_DIR)),)
+$(full_target): PRIVATE_ADDITIONAL_HTML_DIR := -htmldir2 $(LOCAL_PATH)/$(LOCAL_ADDITIONAL_HTML_DIR)
+else
+$(full_target): PRIVATE_ADDITIONAL_HTML_DIR :=
+endif
 
 # TODO: not clear if this is used any more
 $(full_target): PRIVATE_LOCAL_PATH := $(LOCAL_PATH)
@@ -159,8 +164,8 @@ $(full_target): PRIVATE_LOCAL_PATH := $(LOCAL_PATH)
 html_dir_files := $(shell find $(LOCAL_PATH)/$(LOCAL_DROIDDOC_HTML_DIR) -type f)
 
 $(full_target): $(full_src_files) $(droiddoc_templates) $(droiddoc) $(html_dir_files) $(full_java_lib_deps) $(LOCAL_ADDITIONAL_DEPENDENCIES)
-	@echo -e ${CL_YLW}"Docs droiddoc:"${CL_RST}" $(PRIVATE_OUT_DIR)"
-	$(hide) mkdir -p $(dir $(full_target))
+	@echo -e ${CL_YLW} Docs droiddoc: $(PRIVATE_OUT_DIR)
+	$(hide) mkdir -p $(dir $@)
 	$(call prepare-doc-source-list,$(PRIVATE_SRC_LIST_FILE),$(PRIVATE_JAVA_FILES), \
 			$(PRIVATE_SOURCE_INTERMEDIATES_DIR) $(PRIVATE_ADDITIONAL_JAVA_DIR))
 	$(hide) ( \
@@ -195,8 +200,8 @@ else
 ##
 ##
 $(full_target): $(full_src_files) $(full_java_lib_deps)
-	@echo -e ${CL_YLW}"Docs javadoc:"${CL_RST}" $(PRIVATE_OUT_DIR)"
-	@mkdir -p $(dir $(full_target))
+	@echo -e ${CL_YLW}Docs javadoc: $(PRIVATE_OUT_DIR)
+	@mkdir -p $(dir $@)
 	$(call prepare-doc-source-list,$(PRIVATE_SRC_LIST_FILE),$(PRIVATE_JAVA_FILES), \
 			$(PRIVATE_SOURCE_INTERMEDIATES_DIR) $(PRIVATE_ADDITIONAL_JAVA_DIR))
 	$(hide) ( \
