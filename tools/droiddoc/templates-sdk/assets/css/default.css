@@ -1754,8 +1754,12 @@ EndColorStr='#ececec');
 #qv-wrapper {
   float:right;
   clear:right;
-  margin:-27px 0 0 20px; /* negative top-margin to counter the content-header bottom margin */
+  margin:0 0 0 20px; /* negative top-margin to counter the content-header bottom margin */
   padding:0 0 20px;
+}
+
+#tb-wrapper {
+  margin:-27px 0 0 20px; /* negative top-margin to counter the content-header bottom margin */
 }
 
 #tb,
@@ -1784,11 +1788,13 @@ EndColorStr='#ececec');
   font-size:inherit;
 }
 
-#tb .download-box {
+#tb .download-box,
+#qv .download-box {
   padding:0 0 0 15px;
 }
 
-#tb .download-box .filename {
+#tb .download-box .filename,
+#qv .download-box .filename {
   font-size:11px;
   margin:4px 4px 10px;
   color:#666;
@@ -2429,6 +2435,30 @@ Lightbox
 }
 
 /* --------------------------------------------------------------------------
+Butterbar
+*/
+#butterbar-wrapper {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+}
+#butterbar {
+  width:940px;
+  margin:0 auto;
+}
+#butterbar-message {
+  background-color:#f80;
+  float:right;
+  font-size:12px;
+  font-weight:bold;
+  padding:0 10px;
+  border-radius: 0 0 5px 5px;
+}
+#butterbar-message a {color:#fff !important}
+#butterbar-message a:hover {text-decoration:underline;}
+
+/* --------------------------------------------------------------------------
 Misc
 */
 
@@ -2615,36 +2645,63 @@ div.design-announce p {
   background-image: url(../images/styles/disclosure_up.png);
 }
 
-/* notice sidebox link used in Design docs */
-a.notice-developers {
+/* notice box for cross links between Design/Develop docs */
+a.notice-developers,
+a.notice-designers {
   float:right;
-  width:240px;
+  width:238px;
   min-height:50px;
   margin:0 0 20px 20px;
   border:1px solid #ddd;
 }
-a.notice-developers div {
+a.notice-developers div,
+a.notice-designers div {
   min-height:40px;
-  background:url('../images/styles/notice-developers.png') no-repeat 10px 10px;
+  background:url('../images/styles/notice-developers@2x.png') no-repeat 10px 10px;
+  background-size:40px 40px;
   padding:10px 10px 10px 60px;
 }
-a.notice-developers:hover {
+a.notice-designers div {
+  background:url('../images/styles/notice-designers@2x.png') no-repeat 10px 10px;
+  background-size:40px 40px;
+}
+a.notice-developers:hover,
+a.notice-designers:hover {
   background:#eee;
 }
-a.notice-developers h3 {
+a.notice-developers h3,
+a.notice-designers h3 {
   font-size:14px;
   font-weight:normal;
   text-transform:uppercase;
   color:#000 !important;
   margin:0;
 }
-a.notice-developers p {
+a.notice-developers p,
+a.notice-designers p {
   margin:0;
   line-height:16px;
 }
-a.notice-developers.left {
+a.notice-developers.left,
+a.notice-designers.left {
   margin-left:0;
   float:left;
+}
+
+
+/* hide nested list items; companion to hideNestedLists() */
+.hide-nested li ol,
+.hide-nested li ul {
+  display:none;
+}
+
+a.header-toggle {
+  display:block;
+  float:right;
+  text-transform:uppercase;
+  font-size:.8em !important;
+  font-weight:normal;
+  margin-top:2px;
 }
 
 
