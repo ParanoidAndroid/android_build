@@ -83,7 +83,18 @@ ifneq ($(USE_CCACHE),)
   ifeq ($(HOST_OS)-$(BUILD_OS),windows-linux)
     CCACHE_HOST_TAG := linux-$(BUILD_ARCH)
   endif
-  ccache := prebuilts/misc/$(CCACHE_HOST_TAG)/ccache/ccache
+
+  # Search executable
+  ifneq ($(strip $(wildcard /usr/bin/ccache)),)
+    # Use host ccache
+    ccache := /usr/bin/ccache
+    # Enable compression with host executable
+    export CCACHE_COMPRESS := 1
+  else
+    # Use prebuilt ccache
+    ccache := prebuilts/misc/$(CCACHE_HOST_TAG)/ccache/ccache
+  endif
+
   # Check that the executable is here.
   ccache := $(strip $(wildcard $(ccache)))
   ifdef ccache
