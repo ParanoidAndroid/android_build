@@ -74,7 +74,7 @@ TARGET_arm_CFLAGS :=    -O3 \
                         -fstrict-aliasing    \
                         -fno-tree-vectorize
 else
-TARGET_arm_CFLAGS :=    -O2 \
+TARGET_arm_CFLAGS :=    -O3 \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
@@ -85,7 +85,7 @@ endif
 # compiled as ARM.
 ifeq ($(TARGET_USE_O3),true)
 TARGET_thumb_CFLAGS :=  -mthumb \
-                            -O2 \
+                            -O3 \
                             -fomit-frame-pointer \
                             -fno-strict-aliasing \
                             -fno-tree-vectorize
