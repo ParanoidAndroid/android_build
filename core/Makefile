@@ -1267,7 +1267,11 @@ ifeq ($(TARGET_BUILD_TYPE),debug)
 endif
 name := $(name)-ota-$(FILE_NAME_TAG)
 
-INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
+ifeq ($(VENDOR_OTA_PACKAGE_TARGET),)
+    INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
+else
+    INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(VENDOR_OTA_PACKAGE_TARGET).zip
+endif
 
 $(INTERNAL_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
 
@@ -1283,15 +1287,14 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	    -p $(HOST_OUT) \
 	    -k $(KEY_CERT_PAIR) \
 	    --backup=$(backuptool) \
+	    --manifest \
 	    $(BUILT_TARGET_FILES_PACKAGE) $@
 ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
 	@echo "Running releasetool"
 	$(hide) $(TARGET_CUSTOM_RELEASETOOL)
-else
-        $(hide) ln -f $(INTERNAL_OTA_PACKAGE_TARGET) $(VENDOR_TARGET_PACKAGE)
-        $(hide) $(MD5SUM) $(VENDOR_TARGET_PACKAGE) > $(VENDOR_TARGET_PACKAGE).md5sum
-        @echo -e ${CL_CYN}"Package Complete: $(VENDOR_TARGET_PACKAGE)"${CL_RST}
 endif
+	$(hide) $(MD5SUM) $(INTERNAL_OTA_PACKAGE_TARGET) > $(INTERNAL_OTA_PACKAGE_TARGET).md5sum
+	@echo -e ${CL_CYN}"Package Complete: $$(cat $(INTERNAL_OTA_PACKAGE_TARGET).md5sum)"${CL_RST}
 
 .PHONY: otapackage bacon
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)

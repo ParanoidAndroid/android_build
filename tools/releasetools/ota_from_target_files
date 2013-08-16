@@ -56,6 +56,10 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
       Enable or disable the execution of backuptool.sh.
       Disabled by default.
 
+  --manifest
+      Save build manifest
+      Disabled by default.
+
 """
 
 import sys
@@ -92,7 +96,8 @@ OPTIONS.omit_prereq = False
 OPTIONS.extra_script = None
 OPTIONS.aslr_mode = True
 OPTIONS.worker_threads = 3
-OPTIONS.backuptool = True
+OPTIONS.backuptool = False
+OPTIONS.manifest = False
 
 def MostPopularKey(d, default):
   """Given a dict, return the key corresponding to the largest
@@ -759,6 +764,8 @@ def main(argv):
       OPTIONS.worker_threads = int(a)
     elif o in ("--backup"):
       OPTIONS.backuptool = True
+    elif o in ("--manifest"):
+      OPTIONS.manifest = True
     else:
       return False
     return True
@@ -774,6 +781,7 @@ def main(argv):
                                               "worker_threads=",
                                               "aslr_mode=",
                                               "backup=",
+                                              "manifest",
                                               ],
                              extra_option_handler=option_handler)
 
@@ -811,6 +819,14 @@ def main(argv):
   temp_zip_file = tempfile.NamedTemporaryFile()
   output_zip = zipfile.ZipFile(temp_zip_file, "w",
                                compression=zipfile.ZIP_DEFLATED)
+
+  if OPTIONS.manifest:
+    print "--- saving manifest ---"
+    p = common.Run(["repo", "manifest", "-r"], stdout=subprocess.PIPE)
+    manifest = p.communicate()[0]
+    if p.returncode != 0:
+      raise ExternalError("failed to save manifest")
+    common.ZipWriteStr(output_zip, "system/etc/build-manifest.xml", manifest)
 
   if OPTIONS.incremental_source is None:
     WriteFullOTAPackage(input_zip, output_zip)
