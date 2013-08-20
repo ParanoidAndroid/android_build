@@ -68,16 +68,30 @@ endif
 
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
+ifeq ($(TARGET_USE_O3),true)
+TARGET_arm_CFLAGS :=    -O3 \
+                        -fomit-frame-pointer \
+                        -fstrict-aliasing    \
+                        -fno-tree-vectorize
+else
 TARGET_arm_CFLAGS :=    -O2 \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
                         -funswitch-loops
+endif
 
 # Modules can choose to compile some source as thumb.
+ifeq ($(TARGET_USE_O3),true)
+                        -O2 \
+                        -fomit-frame-pointer \
+                        -fno-strict-aliasing \
+                        -fno-tree-vectorize
+else
 TARGET_thumb_CFLAGS :=  -mthumb \
                         -Os \
                         -fomit-frame-pointer \
                         -fno-strict-aliasing
+endif
 
 # Set FORCE_ARM_DEBUGGING to "true" in your buildspec.mk
 # or in your environment to force a full arm build, even for
