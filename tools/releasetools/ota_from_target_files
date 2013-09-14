@@ -404,11 +404,30 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if OPTIONS.wipe_user_data:
     script.FormatPartition("/data")
 
+  script.Print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+  script.Print("^             ____    _____  _____           ^")
+  script.Print("^      /\    / __ \  / ____||  __ \  /\      ^")
+  script.Print("^     /  \  | |  | || (___  | |__) |/  \     ^")
+  script.Print("^    / /\ \ | |  | | \___ \ |  ___// /\ \    ^")
+  script.Print("^   / ____ \| |__| | ____) || |   / ____ \   ^")
+  script.Print("^  /_/    \_\\____/ |_____/ |_|  /_/    \_\  ^")
+  script.Print("^                 ____                       ^")
+  script.Print("^                |___ \    _                 ^")
+  script.Print("^                  __) |  | |_               ^")
+  script.Print("^                 |__ < |_   _|              ^")
+  script.Print("^                 ___) |  |_|                ^")
+  script.Print("^                |____/                      ^")
+  script.Print("^                                            ^")
+  script.Print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+  script.Print("^             FORMATTING SYSTEM...           ^")
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
   script.FormatPartition("/system")
   script.Mount("/system")
+  script.ShowProgress(0.5, 40)
+  script.Print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+  script.Print("^                 INSTALLING...              ^")
   script.UnpackPackageDir("system", "/system")
 
   symlinks = CopySystemFiles(input_zip, output_zip)
@@ -432,6 +451,9 @@ def WriteFullOTAPackage(input_zip, output_zip):
   script.WriteRawImage("/boot", "boot.img")
 
   script.ShowProgress(0.1, 0)
+  script.Print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+  script.Print("^           INSTALLATION COMPLETE!           ^")
+  script.Print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
   device_specific.FullOTA_InstallEnd()
 
   if OPTIONS.extra_script is not None:
