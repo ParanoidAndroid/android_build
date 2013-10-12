@@ -690,7 +690,7 @@ $(TARGET_RECOVERY_ROOT_TIMESTAMP): \
 		$(recovery_fstab) \
 		$(RECOVERY_INSTALL_OTA_KEYS)
 	@echo -e ${CL_CYN}"----- Making recovery filesystem ------"${CL_RST}
-	$(hide) rm -rf $(TARGET_RECOVERY_OUT)
+#	$(hide) rm -rf $(TARGET_RECOVERY_OUT)
 	$(hide) mkdir -p $(TARGET_RECOVERY_OUT)
 	$(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/etc $(TARGET_RECOVERY_ROOT_OUT)/tmp
 	@echo -e ${CL_CYN}"Copying baseline ramdisk..."${CL_RST}
