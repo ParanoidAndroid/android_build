@@ -57,6 +57,7 @@ parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpForm
     branch in all repos first before performing any cherry picks.'''))
 parser.add_argument('change_number', nargs='+', help='change number to cherry pick')
 parser.add_argument('-i', '--ignore-missing', action='store_true', help='do not error out if a patch applies to a missing directory')
+parser.add_argument('-c', '--checkout', action='store_true', help='checkout instead of cherry pick')
 parser.add_argument('-s', '--start-branch', nargs=1, help='start the specified branch before cherry picking')
 parser.add_argument('-a', '--abandon-first', action='store_true', help='before cherry picking, abandon the branch specified in --start-branch')
 parser.add_argument('-b', '--auto-branch', action='store_true', help='shortcut to "--start-branch auto --abandon-first --ignore-missing"')
@@ -271,13 +272,15 @@ for change in args.change_number:
     # Check if it worked
     FETCH_HEAD = '%s/.git/FETCH_HEAD' % project_path
     if os.stat(FETCH_HEAD).st_size == 0:
-        # That didn't work, fetch from Gerrit instead
-        if args.verbose:
-          print('Fetching from GitHub didn\'t work, trying to fetch the change from Gerrit')
-        cmd = 'cd %s && git fetch %s %s' % (project_path, fetch_url, fetch_ref)
-        execute_cmd(cmd)
-    # Perform the cherry-pick
-    cmd = 'cd %s && git cherry-pick FETCH_HEAD' % (project_path)
+        # That didn't work, print error and exit
+        sys.stderr.write('ERROR: Fetching change from Gerrit failed. Exiting...')
+        sys.exit(1);
+    # Perform the cherry-pick or checkout
+    if args.checkout:
+        cmd = 'cd %s && git checkout FETCH_HEAD' % (project_path)
+    else:
+        cmd = 'cd %s && git cherry-pick FETCH_HEAD' % (project_path)
+
     execute_cmd(cmd)
     if not args.quiet:
         print('')
