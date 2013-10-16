@@ -42,7 +42,7 @@ except ImportError:
 # Parse the command line
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=textwrap.dedent('''\
     repopick.py is a utility to simplify the process of cherry picking
-    patches from CyanogenMod's Gerrit instance.
+    patches from ParanoidAndroid's Gerrit instance.
 
     Given a list of change numbers, repopick will cd into the project path
     and cherry pick the latest patch available.
@@ -92,22 +92,23 @@ def which(program):
             exe_file = os.path.join(path, program)
             if is_exe(exe_file):
                 return exe_file
-
-    return None
+    sys.stderr.write('ERROR: Could not find the %s program in $PATH\n' % program)
+    sys.exit(1)
 
 # Simple wrapper for os.system() that:
 #   - exits on error
 #   - prints out the command if --verbose
 #   - suppresses all output if --quiet
-def execute_cmd(cmd):
+def execute_cmd(cmd, exit_on_fail=True):
     if args.verbose:
         print('Executing: %s' % cmd)
     if args.quiet:
         cmd = cmd.replace(' && ', ' &> /dev/null && ')
         cmd = cmd + " &> /dev/null"
-    if os.system(cmd):
+    ret = os.system(cmd)
+    if ret and exit_on_fail:
         if not args.verbose:
-            print('\nCommand that failed:\n%s' % cmd)
+            sys.stderr.write('\nERROR: Command that failed:\n%s' % cmd)
         sys.exit(1)
 
 # Verifies whether pathA is a subdirectory (or the same) as pathB
@@ -131,12 +132,15 @@ if not is_exe(git_bin):
     sys.exit(1)
 
 # Change current directory to the top of the tree
-if 'ANDROID_BUILD_TOP' in os.environ:
+if os.environ.get('ANDROID_BUILD_TOP', None):
     top = os.environ['ANDROID_BUILD_TOP']
     if not is_pathA_subdir_of_pathB(os.getcwd(), top):
         sys.stderr.write('ERROR: You must run this tool from within $ANDROID_BUILD_TOP!\n')
         sys.exit(1)
     os.chdir(os.environ['ANDROID_BUILD_TOP'])
+else:
+    sys.stderr.write('ERROR: $ANDROID_BUILD_TOP is not defined. please check build/envsetup.sh\n')
+    sys.exit(1)
 
 # Sanity check that we are being run from the top level of the tree
 if not os.path.isdir('.repo'):
@@ -189,7 +193,7 @@ for change in args.change_number:
     # gerrit returns two lines, a magic string and then valid JSON:
     #   )]}'
     #   [ ... valid JSON ... ]
-    url = 'http://gerrit.paranoidandroid.co/changes/?q=%s&o=CURRENT_REVISION&o=CURRENT_COMMIT&pp=0' % change
+    url = 'https://gerrit.paranoidandroid.co/changes/?q=%s&o=CURRENT_REVISION&o=CURRENT_COMMIT&pp=0' % change
     if args.verbose:
         print('Fetching from: %s\n' % url)
     f = urllib.request.urlopen(url)
