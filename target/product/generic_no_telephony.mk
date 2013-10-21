@@ -41,6 +41,7 @@ PRODUCT_PACKAGES := \
     Phone \
     QuickSearchBox \
     Settings \
+    SoundRecorder \
     SystemUI \
     CalendarProvider \
     bluetooth-health \
