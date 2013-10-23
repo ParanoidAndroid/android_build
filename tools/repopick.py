@@ -132,15 +132,12 @@ if not is_exe(git_bin):
     sys.exit(1)
 
 # Change current directory to the top of the tree
-if os.environ.get('ANDROID_BUILD_TOP', None):
+if 'ANDROID_BUILD_TOP' in os.environ:
     top = os.environ['ANDROID_BUILD_TOP']
     if not is_pathA_subdir_of_pathB(os.getcwd(), top):
         sys.stderr.write('ERROR: You must run this tool from within $ANDROID_BUILD_TOP!\n')
         sys.exit(1)
     os.chdir(os.environ['ANDROID_BUILD_TOP'])
-else:
-    sys.stderr.write('ERROR: $ANDROID_BUILD_TOP is not defined. please check build/envsetup.sh\n')
-    sys.exit(1)
 
 # Sanity check that we are being run from the top level of the tree
 if not os.path.isdir('.repo'):
